@@ -16,7 +16,7 @@ interface Message {
     userName: string,
     message: string
 }
-type callback = (data: Message) => {}
+type callback = (data: Array<Message>) => void
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app)
@@ -29,8 +29,12 @@ export const useListenRealtimeDb = async (callback: callback) => {
     const messagesRef = ref(db, 'chats/general');
     onValue(messagesRef, (snapshot) => {
         const data = snapshot;
+        const msgs: Array<Message> = []
         data.forEach(msg => {
-            callback(msg.val())
+            const val: Message = msg.val()
+            msgs.push(val)
         })
+
+        callback(msgs)
     });
 }

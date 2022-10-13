@@ -1,8 +1,9 @@
 <template>
 
-  <div>
-    <div class="border-2 shadow-md" v-for="m in messages">
-      {{ m }}
+  <div class="flex flex-col justify-end gap-2 mb-16 mx-1">
+    <div class="border-2 text-right text-white bg-primary rounded-2xl px-2 py-3 self-end border-primary shadow-primary" v-for="m in messages">
+      <h1>{{ m.userName }}</h1>
+      <p>{{ m.message }}</p>
     </div>
   </div>
   <!--Bottom chat input box-->
@@ -52,7 +53,11 @@ const sendMessage = async () => {
   }
 }
 
-const onNewMessageCallback = (message: Message) => messages.value.push(message)
+const onNewMessageCallback = (message: Array<Message>) => {
+  console.log(message);
+  
+  messages.value = message
+}
 
 onMounted(() => {
   useListenRealtimeDb(onNewMessageCallback)
