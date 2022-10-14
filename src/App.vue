@@ -12,10 +12,10 @@
 
   <div v-else>
     <div class="flex flex-col justify-end gap-2 mb-16 mx-1">
-      <div
-        class="border-2 text-right text-white bg-primary rounded-2xl px-2 py-3 self-end border-primary shadow-primary"
+      <div :class="[uuid == m.uuid ? 'self-end bg-primary border-primary' : 'self-start bg-green-500 border-green-500']"
+        class="border-2 text-white rounded-2xl px-2 py-1 shadow-primary"
         v-for="m in messages">
-        <h1>{{ m.userName }}</h1>
+        <h1 class="font-bold text-lg">{{ m.userName }}</h1>
         <p>{{ m.message }}</p>
       </div>
       <div ref="bottom" class="mb-12"></div>
@@ -47,28 +47,32 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 import { useListenRealtimeDb, useSaveMessage } from '../src/composables'
 
-interface Message {
+interface ChatMessage {
+  uuid: string,
   userName: string,
   message: string
 }
 
 const newUserName: Ref<string> = ref('')
-const messages: Ref<Array<Message>> = ref([])
+const messages: Ref<Array<ChatMessage>> = ref([])
 const bottom: Ref<HTMLElement | undefined> = ref()
 const userName: Ref<string | undefined> = ref('')
 const message: Ref<string> = ref('')
+const uuid: Ref<string | null> = ref('')
 function sendMessage(event: MouseEvent) {
   try {
     (async function () {
-     await useSaveMessage({
-      message: message.value,
-      userName: userName.value || ''
-     })
-     console.log(message);
-     
-     message.value = '';
+      await useSaveMessage({
+        uuid: uuid.value || '',
+        message: message.value,
+        userName: userName.value || ''
+      })
+      console.log(message);
+
+      message.value = '';
     })();
     return event
   } catch (error) {
@@ -81,7 +85,7 @@ function saveUser(event: MouseEvent) {
   return event
 }
 
-const onNewMessageCallback = (message: Array<Message>) => {
+const onNewMessageCallback = (message: Array<ChatMessage>) => {
   messages.value = message
   bottom.value?.scrollIntoView()
 }
@@ -89,5 +93,13 @@ const onNewMessageCallback = (message: Array<Message>) => {
 onMounted(() => {
   useListenRealtimeDb(onNewMessageCallback)
   userName.value = localStorage.getItem('username') || ''
+  const currentUId = localStorage.getItem('uuid')
+  if (currentUId) {
+    uuid.value = currentUId
+  } else {
+    const newId = uuidv4()
+    uuid.value = newId
+    localStorage.setItem('uuid', newId)
+  }
 })
 </script>
