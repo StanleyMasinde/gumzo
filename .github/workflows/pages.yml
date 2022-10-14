@@ -36,8 +36,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm ci
-      - run: npm run build
+        run: npm ci && npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
