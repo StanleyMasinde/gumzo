@@ -1,5 +1,5 @@
 
-name: Deploy Nuxt site to Pages
+name: Deploy Vite site to Pages
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
             dist
           key: ${{ runner.os }}-vite-build-${{ hashFiles('dist') }}
           restore-keys: |
-            ${{ runner.os }}-nuxt-build-
+            ${{ runner.os }}-vite-build-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Static HTML export with Vite
