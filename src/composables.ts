@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, onValue } from "firebase/database";
+import { v4 as uuidv4 } from 'uuid';
 
 const firebaseConfig = {
     apiKey: "AIzaSyB5w2vI011mPiblium-S-1kIIJx9Gr55jQ",
@@ -13,6 +14,7 @@ const firebaseConfig = {
   };
 
 interface Message {
+    uuid?: string,
     userName: string,
     message: string
 }
@@ -22,6 +24,14 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app)
 
 export const useSaveMessage = async (message: Message) => {
+    const uuid: string | null = localStorage.getItem('uuid')
+    if (uuid) {
+        message.uuid = uuid
+    } else {
+        const newid: string = uuidv4()
+        localStorage.setItem('uuid', newid)
+        message.uuid = newid
+    }
     return await push(ref(db, '/chats/general'), message)
 }
 

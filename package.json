@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "firebase": "^9.12.1",
+    "uuid": "^9.0.0",
     "vue": "^3.2.37",
     "vuefire": "^2.2.5"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
+    "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^3.1.0",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
