@@ -174,7 +174,7 @@ function sendMessage(event: MouseEvent | KeyboardEvent) {
   }
 }
 
-function saveUser(event: MouseEvent) {
+function saveUser(event?: MouseEvent | KeyboardEvent) {
   localStorage.setItem('username', newUserName.value)
   userName.value = newUserName.value
   return event
