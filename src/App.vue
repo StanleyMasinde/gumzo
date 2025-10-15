@@ -83,6 +83,9 @@
               {{ m.userName }}
             </p>
             <p class="text-[15px] leading-relaxed">{{ m.message }}</p>
+            <p class="text-xs mt-1 opacity-70">
+              {{ useFormatTimestamp(m.timestamp) }}
+            </p>
           </div>
 
           <!-- Avatar for current user -->
@@ -130,12 +133,13 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref, nextTick } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import { useListenRealtimeDb, useSaveMessage } from '../src/composables'
+import { useListenRealtimeDb, useSaveMessage, useFormatTimestamp } from '../src/composables'
 
 interface ChatMessage {
   uuid: string,
   userName: string,
-  message: string
+  message: string,
+  timestamp?: number
 }
 
 const newUserName: Ref<string> = ref('')
@@ -154,7 +158,8 @@ function sendMessage(event: MouseEvent | KeyboardEvent) {
       await useSaveMessage({
         uuid: uuid.value || '',
         message: trimmedMessage,
-        userName: userName.value || ''
+        userName: userName.value || '',
+        timestamp: Date.now()
       })
       message.value = '';
       // Reset textarea height
